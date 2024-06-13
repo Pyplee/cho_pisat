@@ -85,24 +85,6 @@ function MainComponent() {
                 <span className="text-red-500 text-sm absolute">{errors.password.message}</span>
               )}
           </div>
-          {/* <div>
-            <label htmlFor='confirmPassword' className='label block text-white mb-1'>
-              Подтверждение пароля *
-            </label>
-            <input
-              {...register('confirmPassword')}
-              type='password'
-              id='confirmPassword'
-              placeholder='Не менее 6 символов'
-              className='input'
-              aria-invalid={errors.confirmPassword ? 'true' : 'false'}
-            />
-            {errors.confirmPassword && (
-              <span role='alert' className='error'>
-                {errors.confirmPassword?.message}
-              </span>
-            )}
-          </div> */}
           <div className="py-2">
             <label className="block text-white mb-1" htmlFor="confirmPassword">
               Повторите пароль
@@ -151,7 +133,7 @@ function MainComponent() {
               width="25px"
               height="25px"
             />
-            Зарегистрироваться через github
+            Войти через github
           </button>
           <button className="w-full bg-gray-400 text-white py-2 rounded-md">
             Войти
