@@ -6,12 +6,12 @@ import * as z from "zod";
 
 // Define the form schema using Zod
 const schema = z.object({
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
-  confirmPassword: z.string().min(8, 'Repeat password'),
+  email: z.string().email("Неверный формат почты"),
+  password: z.string().min(8, "Пароль не может быть менее 8 симвлов"),
+  confirmPassword: z.string().min(8, 'Еще раз введите пароль'),
 })
 .refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Пароли не совпадают",
   path: ["confirmPassword"],
 });
 
@@ -40,10 +40,11 @@ function MainComponent() {
           </a>
         </p>
         <form className="w-1/2 space-y-4">
-          <div>
+          <div className="py-2">
             <label className="block text-white mb-1" htmlFor="email">
               Почта
             </label>
+            <div className="relative">
             <input
               type="email"
               id="email"
@@ -52,11 +53,12 @@ function MainComponent() {
               }`}
               {...register("email")}
             />
+            </div>
             {errors.email && (
-              <span className="text-red-500 text-sm">{errors.email.message}</span>
+              <span className="text-red-500 text-sm absolute">{errors.email.message}</span>
             )}
           </div>
-          <div>
+          <div className="py-2">
             <label className="block text-white mb-1" htmlFor="password">
               Пароль
             </label>
@@ -69,9 +71,6 @@ function MainComponent() {
                 }`}
                 {...register("password")}
               />
-              {errors.password && (
-                <span className="text-red-500 text-sm">{errors.password.message}</span>
-              )}
               <span className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
                 <img
                   className="fas fa-eye"
@@ -82,6 +81,9 @@ function MainComponent() {
                 />
               </span>
             </div>
+            {errors.password && (
+                <span className="text-red-500 text-sm absolute">{errors.password.message}</span>
+              )}
           </div>
           {/* <div>
             <label htmlFor='confirmPassword' className='label block text-white mb-1'>
@@ -101,7 +103,7 @@ function MainComponent() {
               </span>
             )}
           </div> */}
-          <div>
+          <div className="py-2">
             <label className="block text-white mb-1" htmlFor="confirmPassword">
               Повторите пароль
             </label>
@@ -114,9 +116,6 @@ function MainComponent() {
                 }`}
                 {...register("confirmPassword")}
               />
-              {errors.confirmPassword && (
-                <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>
-              )}
               <span className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
                 <img
                   className="fas fa-eye"
@@ -127,6 +126,9 @@ function MainComponent() {
                 />
               </span>
             </div>
+            {errors.confirmPassword && (
+                <span className="text-red-500 text-sm absolute">{errors.confirmPassword.message}</span>
+              )}
           </div>
 
           <button
