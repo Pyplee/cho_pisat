@@ -8,16 +8,16 @@ function Header() {
     <Link href="/main">
       <Image src="/logo.svg"
         alt="GS find logo"
-        width={100}
-        height={100}
+        width={180}
+        height={180}
         />
     </Link>
     </div>
     <nav className="flex space-x-4">
-      <a href="#" className="text-sm">
+      <a href="#" className="text-xl">
         O нас
       </a>
-      <a href="#" className="text-sm">
+      <a href="#" className="text-xl">
         Помощь
       </a>
     </nav>
