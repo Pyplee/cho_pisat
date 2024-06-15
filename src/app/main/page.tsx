@@ -57,7 +57,7 @@ function MainComponent() {
               name="group"
               type="text"
               placeholder="Пример: 2101-О"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-white placeholder-gray-500 font-roboto"
+              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
             />
           </div>
           <div>
@@ -68,7 +68,7 @@ function MainComponent() {
               name="role"
               type="text"
               placeholder="Пример: тестировщик"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-white placeholder-gray-500 font-roboto"
+              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
             />
           </div>
           <div>
@@ -78,7 +78,7 @@ function MainComponent() {
             <textarea
               name="keywords"
               placeholder="Пример: backend, frontend, stack, devops,"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-white placeholder-gray-500 font-roboto h-[100px]"
+              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto h-[100px]"
             ></textarea>
           </div>
           <div>
@@ -87,7 +87,7 @@ function MainComponent() {
             </label>
             <select
               name="sort"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-white font-roboto"
+              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black font-roboto"
             >
               <option>Наилучшему совпадению</option>
             </select>
@@ -100,11 +100,11 @@ function MainComponent() {
               name="stack_search"
               type="text"
               placeholder="Поиск ..."
-              className="w-full px-4 py-2 bg-[#EEEEEE] text-white placeholder-gray-500 font-roboto"
+              className="w-full px-4 py-2 bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
             />
           </div>
           <div className="mt-2 bg-[#EEEEEE] p-4 rounded-md h-[200px] overflow-y-scroll">
-            <ul className="font-roboto text-white space-y-2">
+            <ul className="font-roboto text-black space-y-2">
               <li>react</li>
               <li>js</li>
               <li>node</li>
@@ -114,10 +114,10 @@ function MainComponent() {
               <li>nginx</li>
               <li>vue</li>
               <li>
-                nextjs <span className="text-white">✔</span>
+                nextjs <span className="text-black">✔</span>
               </li>
               <li>
-                oauth 2.0 <span className="text-white">✔</span>
+                oauth 2.0 <span className="text-black">✔</span>
               </li>
             </ul>
           </div>
