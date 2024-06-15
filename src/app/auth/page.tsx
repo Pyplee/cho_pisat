@@ -20,14 +20,8 @@ function MainComponent() {
       </div>
       <div className="flex-1 bg-[#383b42] p-8 flex flex-col items-center justify-center">
         <h2 className="text-white font-bold text-2xl mb-6">Вход / регистрация</h2>
-        <p className="text-white mb-4">
-          Почему нет формы{" "}
-          <a href="#" className="text-[#ff8300]">
-            Входа / регистрации ?
-          </a>
-        </p>
         <div className="w-1/2 space-y-4">
-        <button className="w-full bg-white text-black flex items-center justify-center py-2 rounded-md">
+        {/* <button className="w-full bg-white text-black flex items-center justify-center py-2 rounded-md">
             <img
               className="fab fa-github mr-2"
               src="/google.svg"
@@ -36,18 +30,18 @@ function MainComponent() {
               height="30px"
             />
             Войти через google
-          </button>
+          </button> */}
           <button className="w-full bg-white text-black flex items-center justify-center py-2 rounded-md">
             <img
               className="fab fa-github mr-2"
-              src="/github_logo.svg"
+              src="/github_logo_black.svg"
               alt="Github logo"
               width="30px"
               height="30px"
             />
             Войти через github
           </button>
-          <button className="w-full bg-[#ff8300] text-white flex items-center justify-center py-2 rounded-md">
+          {/* <button className="w-full bg-[#ff8300] text-white flex items-center justify-center py-2 rounded-md">
             <img
               className="fab fa-github mr-2"
               src="/telegram.svg"
@@ -56,7 +50,7 @@ function MainComponent() {
               height="35px"
             />
             Войти через telegram
-          </button>
+          </button> */}
           {/* <div className="bg-gray-400 h-1 w-full rounded-full"></div> */}
         </div>
       </div>
