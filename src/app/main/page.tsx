@@ -1,185 +1,205 @@
 "use client";
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
+import {api, routes} from '../routes';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import Card from './card';
+import technologies from '../technologyBase.js';
+import Image from 'next/image'
+import convertNameToPathSVG from '../findAndGetPathSVG.js';
+import { ColorRing } from 'react-loader-spinner'
+
 
 function MainComponent() {
-  const [loading, setLoading] = React.useState(false);
+  const router = useRouter()
+  const limitedStackCount = 9;
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        "https://www.create.xyz/integrations/gpt-vision/",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            messages: [
-              {
-                role: "user",
-                content: [
-                  { type: "text", text: "What happens when the glove drops?" },
-                  {
-                    type: "image_url",
-                    image_url: { url: "data:image/png;base64,/9j/4AAQ..." },
-                  },
-                ],
-              },
-            ],
-          }),
-        }
-      );
-      const data = await response.json();
-      const result = data.choices[0].message.content;
-      console.log(result);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  const [isLoading, setLoading] = React.useState(true);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
+  const [selectedStack, setSelectedStack] = useState<string[]>([]);
+  const autocompleteRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (autocompleteRef.current && !(target instanceof HTMLElement && target.contains(autocompleteRef.current))) {
+        setFilteredOptions([]);
+      }
+    };
+    const token = Cookies.get('token');
+    api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
       setLoading(false);
+    })
+    .catch((error) => router.push('/auth'));
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
     }
+  }, []);
+
+  const handleSearch = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value;
+    setSearchTerm(value);
+    
+    const filteredTech = technologies.filter(tech => tech.toLowerCase().includes(value.toLowerCase()));
+    setFilteredOptions(filteredTech);
   };
 
+  const handleOptionClick = (tech: string) => {
+    setSearchTerm(tech);
+    setFilteredOptions([]);
+    if (!selectedStack.includes(tech) && selectedStack.length < limitedStackCount) {
+    setSelectedStack([...selectedStack, tech])
+  };
+  setSearchTerm("");
+}
+
+const handleRemoveTechClick = (tech: string) => {
+  const newTech = selectedStack.filter((el) => el !== tech);
+  setSelectedStack(newTech);
+};
+
+if (isLoading) {
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="bg-[#393E46] p-4 rounded-xl m-4 space-y-4">
-        <div className="flex-grow p-4 bg-[#393E46] flex space-x-4">
-          <div className="bg-[#222831] p-8 rounded-lg w-[800px] mx-auto">
-        <div className="flex justify-between items-center">
-          <h1 className="text-white text-4xl font-roboto">Поиск группы</h1>
-          <span className="text-[#DC5F00] text-xl font-roboto">
-            Найдено результатов: 10
-          </span>
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2e3138] w-full h-full flex justify-center items-center">
+      <ColorRing
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="color-ring-loading"
+        wrapperStyle={{}}
+        wrapperClass="color-ring-wrapper"
+        colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+        />
+    </div>
+  );
+}
+
+  return (
+    <div className="flex flex-col min-h-screen bg-[#393E46] rounded-xl">
+      <main className="flex-grow p-4 flex space-x-4 ">
+        <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px]">
+          <h2 className="text-white text-xl">Меню</h2>
+          <button className="w-full bg-white py-2 rounded">
+            Создать группу
+          </button>
+          <button className="w-full bg-white py-2 rounded">
+            Создать письмо для отклика
+          </button>
+          <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
+            Настройка профиля
+          </button>
         </div>
-        <div className="grid grid-cols-2 gap-8 mt-8">
-          <div>
-            <label className="block text-white mb-2 font-roboto">
-              Учебная группа
-            </label>
-            <input
-              name="group"
-              type="text"
-              placeholder="Пример: 2101-О"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
-            />
+        <div className="bg-[#222831] p-4 rounded-xl flex-grow space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-white text-xl">Поиск группы</h2>
+            <span className="text-[#ff5c00] text-base">
+              Найдено результатов: 0
+            </span>
           </div>
-          <div>
-            <label className="block text-white mb-2 font-roboto">
-              Желаемая роль
-            </label>
+          <form className="space-y-4">
+            <div className="flex space-x-4">
+              <input
+                name="groupName"
+                type="text"
+                id="groupName"
+                placeholder="Группа. Например: 2101-Д"
+                className="flex-grow p-2 rounded bg-[#2c3136] text-white bg-opacity-100"
+              />
+              <input
+                name="role"
+                type="text"
+                placeholder="Желаемая роль в команде"
+                className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+              />
+            </div>
+            <div className="flex space-x-4">
             <input
-              name="role"
-              type="text"
-              placeholder="Пример: тестировщик"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-2 font-roboto">
-              Поиск по ключевым словам
-            </label>
-            <textarea
               name="keywords"
-              placeholder="Пример: backend, frontend, stack, devops,"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto h-[100px]"
-            ></textarea>
-          </div>
-          <div>
-            <label className="block text-white mb-2 font-roboto">
-              Сортировать по
-            </label>
+              type="text"
+              placeholder="Поиск по словам. Пример: devops, nginx"
+              className="w-full p-2 rounded bg-[#2c3136] text-white"
+            />
             <select
               name="sort"
-              className="w-full px-4 py-2 rounded-md bg-[#EEEEEE] text-black font-roboto"
+              className="w-full p-2 rounded bg-[#2c3136] text-white"
             >
-              <option>Наилучшему совпадению</option>
+              <option value="relewant">Наилучшее совпадение</option>
+              <option value="newest">Новые</option>
             </select>
-          </div>
+            </div>
+            <div className="space-x-4">
+            <div ref={autocompleteRef} className="w-full relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Стек"
+                className="w-full p-2 rounded bg-[#2c3136] text-white"
+              />
+              {filteredOptions.length > 0 && (
+                <ul className="absolute bg-[#222831] p-2 mt-1 w-full rounded">
+                  {filteredOptions.map(tech => (
+                    <li className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-sm flex flex-row p-1" key={tech} onClick={() => handleOptionClick(tech)}>
+                      <Image
+                      src={convertNameToPathSVG(tech)}
+                      alt="Icon tech stack"
+                      width={20}
+                      height={20}
+                      className="pr-1"
+                      />{tech}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="w-full flex flex-wrap justify-start gap-0.5">
+            {selectedStack.map(tech => (
+                    <div className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-lg flex flex-row p-2 text-center inline-block m-2" key={tech} onClick={() => handleRemoveTechClick(tech)}>
+                      <Image
+                      src={convertNameToPathSVG(tech)}
+                      alt="Icon tech stack"
+                      width={30}
+                      height={30}
+                      className="pr-1"
+                      />{tech}
+                    </div>
+                  ))}
+            </div>
+            </div>
+          </form>
         </div>
-        <div className="mt-8">
-          <label className="block text-white mb-2 font-roboto">Стек</label>
-          <div className="flex items-center bg-[#EEEEEE] rounded-md">
-            <input
-              name="stack_search"
-              type="text"
-              placeholder="Поиск ..."
-              className="w-full px-4 py-2 bg-[#EEEEEE] text-black placeholder-gray-500 font-roboto"
-            />
-          </div>
-          <div className="mt-2 bg-[#EEEEEE] p-4 rounded-md h-[200px] overflow-y-scroll">
-            <ul className="font-roboto text-black space-y-2">
-              <li>react</li>
-              <li>js</li>
-              <li>node</li>
-              <li>bootstrap</li>
-              <li>tailwind</li>
-              <li>docker</li>
-              <li>nginx</li>
-              <li>vue</li>
-              <li>
-                nextjs <span className="text-black">✔</span>
-              </li>
-              <li>
-                oauth 2.0 <span className="text-black">✔</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+      </main>
+      <div className="inline-block flex">
+      <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-center gap-0.5 grid-auto-rows place-self-start inline-block">
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
       </div>
-      <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px]">
-            <h2 className="text-white text-xl">Меню</h2>
-            <button className="w-full bg-white py-2 rounded">
-              Создать группу
-            </button>
-            <button className="w-full bg-white py-2 rounded">
-              Создать письмо для отклика
-            </button>
-            <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
-              Настройка профиля
-            </button>
-          </div>
-        </div>
-        <div>
-          <div className="bg-[#2c3136] p-4 rounded-xl space-y-2 text-white w-[300px]">
-            <h3 className="text-lg">Фотосинтез</h3>
-            <p className="text-sm">
-              Идеология проекта: Создание сайта для поиска групп для студентов,
-              это облегчит поиск людей для учебной практики
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                react
-              </span>
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                nextjs
-              </span>
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                tailwind
-              </span>
-            </div>
-            <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
-              Подробнее
-            </button>
-          </div>
-          <div className="bg-[#2c3136] p-4 rounded-xl space-y-2 text-white w-[300px]">
-            <h3 className="text-lg">Фотосинтез</h3>
-            <p className="text-sm">
-              Идеология проекта: Создание сайта для поиска групп для студентов,
-              это облегчит поиск людей для учебной практики
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                react
-              </span>
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                nextjs
-              </span>
-              <span className="text-xs bg-[#DC5F00] py-1 px-2 rounded">
-                tailwind
-              </span>
-            </div>
-            <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
-              Подробнее
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
