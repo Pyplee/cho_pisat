@@ -1,4 +1,4 @@
-const convertNameToNameSVG = (nameSVG) => {
+const convertNameToPathSVG = (nameSVG) => {
   const tech = new String(nameSVG);
   const lowerCase = tech.toLowerCase();
   const splited = lowerCase.split(' ');
@@ -8,4 +8,4 @@ const convertNameToNameSVG = (nameSVG) => {
   return `${pathToDirectorySVGS}${svgName}${fotmatFile}`;
 };
 
-export default convertNameToNameSVG;
+export default convertNameToPathSVG;
