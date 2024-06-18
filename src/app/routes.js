@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://localhost:5000';
+// const baseURL = 'https://localhost:5000';
+const baseURL = 'https://4d60689b4db5d657a8941709cafa784e.serveo.net';
 
 const api = axios.create({
   baseURL,
@@ -14,6 +15,9 @@ const routes = {
   userMe: () => `${baseURL}/api/user/me`, // получить данные по своему профилю
   userUsername: () => `${baseURL}/api/user/${username}`, // получить данные юзера (другого)
   userMeEdit: () => `${baseURL}/api/user/me/edit`, // релактировать свой профиль
+  // redirectGithub: () => `${baseURL}/api/github/redirect`, // auth github redirect
+  redirectGithub: () => `${baseURL}/github/redirect`, // auth github redirect
+  sendTokenGithub: (data) => `${baseURL}/github/callback?code=${data}`, // auth github redirect
 };
 
 
