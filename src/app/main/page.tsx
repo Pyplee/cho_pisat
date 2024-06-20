@@ -176,10 +176,10 @@ if (isLoading) {
       <main className="flex-grow p-4 flex space-x-4 ">
         <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px] max-h-[346px]">
           <h2 className="text-white text-xl">Меню</h2>
-          <button className="w-full bg-white py-2 rounded" onClick={handleOpenModal}>
+          <button className="w-full bg-white py-2 rounded text-black" onClick={handleOpenModal}>
             Создать группу
           </button>
-          <button className="w-full bg-white py-2 rounded">
+          <button className="w-full bg-white py-2 rounded text-black">
             <s>Создать письмо для отклика</s>
           </button>
           <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
