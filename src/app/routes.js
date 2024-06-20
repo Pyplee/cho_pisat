@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const baseURL = 'https://localhost:5000';
+// const baseURL = 'https://gsfind.ru';
 // const baseURL = 'https://4d60689b4db5d657a8941709cafa784e.serveo.net';
 
 const api = axios.create({
@@ -18,6 +19,7 @@ const routes = {
   // redirectGithub: () => `${baseURL}/api/github/redirect`, // auth github redirect
   redirectGithub: () => `${baseURL}/github/redirect`, // auth github redirect
   sendTokenGithub: (data) => `${baseURL}/github/callback?code=${data}`, // auth github redirect
+  addGroup: () => `${baseURL}/api/groups/new`, // auth github redirect
 };
 
 
