@@ -25,20 +25,6 @@ interface Request {
   group: string;
 }
 
-// const obj11 = {
-//   id: '1',
-//   name: 'Fotosintes Fotosintes FotosintesFotosintes Fotosintes Fotosintes',
-//   description: 'Создание сайта для поиска групп для студентов, это облегчит поиск людей для учебной практики практикипрактики практики',
-//   stack: [ 'React', 'Docker', 'Node.js', 'Tailwind CSS' ],
-//   course: 2,
-//   roles: [ 'devops', 'frontend' ],
-//   contactUser: 'http://t.me/telegram/@rrrr',
-//   contactGroup: 'http://t.me/telegram/fotosintes',
-//   group: '2101-Д'
-// }
-
-
-
 function MainComponent() {
   const [showModal, setShowModal] = React.useState(false);
 
@@ -102,28 +88,28 @@ function MainComponent() {
       }
     };
 
-    // const token = Cookies.get('token');
-    // api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
-    // .then((response) => {
-    //   const status = response.status;
-    //   if (status !== 200) {
-    //     throw new Error(`Error: ${status}`);
-    //   }
-    //   setLoading(false);
-    // })
-    // .catch((error) => router.push('/auth'));
+    const token = Cookies.get('token');
+    api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
+      setLoading(false);
+    })
+    .catch((error) => router.push('/auth'));
 
-    // api.get(routes.groups(), { headers: {"Authorization": `Bearer ${token}`}})
-    // .then((response) => {
-    //   const status = response.status;
-    //   if (status !== 200) {
-    //     throw new Error(`Error: ${status}`);
-    //   }
-    //   response.data.array.forEach((el: Request) => {
-    //     addRequest(el);
-    //   });
-    // })
-    // .catch((error) => console.log(error));
+    api.get(routes.groups(), { headers: {"Authorization": `Bearer ${token}`}})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
+      response.data.array.forEach((el: Request) => {
+        addRequest(el);
+      });
+    })
+    .catch((error) => console.log(error));
 
     document.addEventListener('click', handleOutsideClick);
 
