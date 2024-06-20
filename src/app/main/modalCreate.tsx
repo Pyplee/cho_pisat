@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import Image from 'next/image'
 import convertNameToPathSVG from '../findAndGetPathSVG.js';
 import technologies from '../technologyBase.js';
+import {api, routes} from '../routes';
+import Cookies from 'js-cookie';
 
 interface ModalProps {
   showModal: boolean;
@@ -35,6 +37,55 @@ const handleRemoveTechClick = (tech: string) => {
   const newTech = selectedStack.filter((el) => el !== tech);
   setSelectedStack(newTech);
 };
+
+const [formData, setFormData] = useState<
+  {
+    name: string;
+    description: string;
+    stack: string[];
+    course: string;
+    roles: string[];
+    contactUser: string;
+    contactGroup: string;
+    group: string;
+  }
+>({
+  name: "",
+  description: "",
+  stack: [],
+  course: "",
+  roles: [],
+  contactUser: "",
+  contactGroup: "",
+  group: "",
+});
+
+const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+  const { name, value } = event.target as HTMLInputElement;
+  if (name === 'roles') {
+    const roles = value.split(",").map((role: string) => role.trim());
+    setFormData((prevState) => ({...prevState, roles }));
+  } else {
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  }
+};
+
+const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+  const stack = selectedStack;
+  setFormData((prevState) => ({ ...prevState, stack }));
+  event.preventDefault();
+  console.log("Form data:", formData);
+  const token = Cookies.get('token');
+    api.post(routes.addGroup(), formData ,{ headers: {"Authorization": `Bearer ${token}`},})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
+    })
+    .catch((error) => console.log(error));
+};
+
   return (
     <>
       {showModal ? (
@@ -64,17 +115,19 @@ const handleRemoveTechClick = (tech: string) => {
                   <form className="space-y-4">
                   <div className="flex space-x-4">
                     <input
-                      name="groupName"
+                      name="group"
                       type="text"
-                      id="groupName"
+                      id="group"
                       placeholder="Группа. Например: 2101-Д"
                       className="flex-grow p-2 rounded bg-[#2c3136] text-white bg-opacity-100"
+                      onChange={handleInputChange}
                     />
                     <input
-                      name="role"
+                      name="roles"
                       type="text"
-                      placeholder="Желаемая роль в команде"
+                      placeholder="Роли в команде. Пример: frontend, devops"
                       className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="space-x-4">
@@ -102,6 +155,48 @@ const handleRemoveTechClick = (tech: string) => {
                       </ul>
                     )}
                   </div>
+                  </div>
+                  <div className="flex space-x-4">
+                    <input
+                      name="description"
+                      type="text"
+                      placeholder="Идея проекта"
+                      className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      name="course"
+                      type="text"
+                      placeholder="Курс (1, 2, 3)"
+                      className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="flex space-x-4">
+                  <input
+                      name="name"
+                      type="text"
+                      placeholder="Имя команды"
+                      className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      name="contactUser"
+                      type="text"
+                      placeholder="Ссылка на персональный tg"
+                      className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="flex space-x-4">
+                  <input
+                      name="contactGroup"
+                      type="text"
+                      placeholder="Ссылка на группу tg"
+                      className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                      onChange={handleInputChange}
+                    />
+                  </div>
                   <div className="w-full flex flex-wrap justify-start gap-0.5">
                     <p className="text-center text-white p-2 m-2">Выбранный стек:</p>
                   {selectedStack.map(tech => (
@@ -115,7 +210,13 @@ const handleRemoveTechClick = (tech: string) => {
                             />{tech}
                           </div>
                         ))}
-                  </div>
+                      {/* <button
+                      className="bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                      type="submit"
+                      onClick={handleSubmit}
+                    >
+                      Create Group
+                    </button> */}
                   </div>
                 </form>
                 </div>
@@ -127,6 +228,13 @@ const handleRemoveTechClick = (tech: string) => {
                     onClick={handleCloseModal}
                   >
                     Close
+                  </button>
+                  <button
+                    className="bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                    type="submit"
+                    onClick={handleSubmit}
+                  >
+                    Create Group
                   </button>
                 </div>
               </div>
