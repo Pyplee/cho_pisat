@@ -1,113 +1,270 @@
-import Image from "next/image";
+"use client";
+import React, { useRef, useState, useEffect } from "react";
+import {api, routes} from '../routes';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import Card from './card';
+import technologies from '../technologyBase.js';
+import Image from 'next/image'
+import convertNameToPathSVG from '../findAndGetPathSVG.js';
+import { ColorRing } from 'react-loader-spinner';
+import useStore from '../store';
+import ModalCreate from './modalCreate';
 
-export default function Home() {
+interface Request {
+  id: string;
+  name: string;
+  course: string;
+  description: string;
+  roles: string[];
+  stack: string[];
+  contactUser: string;
+  contactGroup: string;
+  creater: string;
+  dateCreated: string;
+  group: string;
+}
+
+function MainComponent() {
+  const [showModal, setShowModal] = React.useState(false);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
+
+  const router = useRouter();
+  const { requests, addRequest } = useStore();
+  const limitedStackCount = 9;
+
+  const [isLoading, setLoading] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
+  const [selectedStack, setSelectedStack] = useState<string[]>([]);
+  const autocompleteRef = useRef(null);
+
+  const [searchGroup, setSearchGroup] = useState('');
+  const [searchRole, setSearchRole] = useState('');
+
+  const handleSearchGroup = (event: React.FormEvent<HTMLInputElement>) => {
+    setSearchGroup((event.target as HTMLInputElement).value);
+  };
+
+  const handleSearchRole = (event: React.FormEvent<HTMLInputElement>) => {
+    setSearchRole((event.target as HTMLInputElement).value);
+  };
+
+  const filterGroups = (
+    groups: Request[],
+    searchGroup: string,
+    searchRole: string
+  ) => {
+    return groups.filter(group => {
+      const groupMatch = group.group.toLowerCase().includes(searchGroup.toLowerCase());
+      const roleMatch = group.roles.includes(searchRole.toLowerCase());
+      if (searchGroup === '' && searchRole === '') {
+        return true;
+      } else if (searchGroup === '') {
+        return roleMatch;
+      } else if (searchRole === '') {
+        return groupMatch;
+      }
+      return groupMatch && roleMatch;
+    });
+  };
+
+  const filteredGroups = filterGroups(requests, searchGroup, searchRole);
+
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (autocompleteRef.current && !(target instanceof HTMLElement && target.contains(autocompleteRef.current))) {
+        setFilteredOptions([]);
+      }
+    };
+
+    const token = Cookies.get('token');
+    api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
+      setLoading(false);
+    })
+    .catch((error) => router.push('/auth'));
+
+    api.get(routes.groups(), { headers: {"Authorization": `Bearer ${token}`}})
+    .then((response) => {
+      const status = response.status;
+      if (status !== 200) {
+        throw new Error(`Error: ${status}`);
+      }
+      response.data.forEach((el: Request) => {
+        addRequest(el);
+      });
+    })
+    .catch((error) => console.log(error));
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+  }, []);
+
+  const handleSearch = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value;
+    setSearchTerm(value);
+    
+    const filteredTech = technologies.filter(tech => tech.toLowerCase().includes(value.toLowerCase()));
+    setFilteredOptions(filteredTech);
+  };
+
+  const handleOptionClick = (tech: string) => {
+    setSearchTerm(tech);
+    setFilteredOptions([]);
+    if (!selectedStack.includes(tech) && selectedStack.length < limitedStackCount) {
+    setSelectedStack([...selectedStack, tech])
+  };
+  setSearchTerm("");
+}
+
+const handleRemoveTechClick = (tech: string) => {
+  const newTech = selectedStack.filter((el) => el !== tech);
+  setSelectedStack(newTech);
+};
+
+if (isLoading) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2e3138] w-full h-full flex justify-center items-center">
+      <ColorRing
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="color-ring-loading"
+        wrapperStyle={{}}
+        wrapperClass="color-ring-wrapper"
+        colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
         />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            MAIN PAGE
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            MAIN PAGE
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-[#393E46] rounded-xl">
+      <ModalCreate showModal={showModal} handleCloseModal={handleCloseModal} />
+      <main className="flex-grow p-4 flex space-x-4 ">
+        <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px] max-h-[346px]">
+          <h2 className="text-white text-xl">Меню</h2>
+          <button className="w-full bg-white py-2 rounded text-black" onClick={handleOpenModal}>
+            Создать группу
+          </button>
+          <button className="w-full bg-white py-2 rounded text-black">
+            <s>Создать письмо для отклика</s>
+          </button>
+          <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
+            Настройка профиля
+          </button>
+        </div>
+        <div className="bg-[#222831] p-4 rounded-xl flex-grow space-y-4 max-h-[314] min-h-[208px]">
+          <div className="flex justify-between items-center">
+            <h2 className="text-white text-xl">Поиск группы</h2>
+            <span className="text-[#ff5c00] text-base">
+              Найдено результатов: {filteredGroups.length}
+            </span>
+          </div>
+          <form className="space-y-4">
+            <div className="flex space-x-4">
+              <input
+                name="groupName"
+                type="text"
+                id="groupName"
+                placeholder="Группа. Например: 2101-Д"
+                className="flex-grow p-2 rounded bg-[#2c3136] text-white bg-opacity-100"
+                onChange={handleSearchGroup}
+              />
+              <input
+                name="role"
+                type="text"
+                placeholder="Желаемая роль в команде"
+                className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                onChange={handleSearchRole}
+              />
+            </div>
+            {/* <div className="flex space-x-4">
+            <input
+              name="keywords"
+              type="text"
+              placeholder="Поиск по словам. Пример: devops, nginx"
+              className="w-full p-2 rounded bg-[#2c3136] text-white"
+            />
+            <select
+              name="sort"
+              className="w-full p-2 rounded bg-[#2c3136] text-white"
+            >
+              <option value="relewant">Наилучшее совпадение</option>
+              {/* <option value="newest">Новые</option> */}
+            {/* </select> */}
+            {/* </div> */}
+            <div className="space-x-4">
+            <div ref={autocompleteRef} className="w-full relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Стек"
+                className="w-full p-2 rounded bg-[#2c3136] text-white"
+              />
+              {filteredOptions.length > 0 && (
+                <ul className="absolute bg-[#222831] p-2 mt-1 w-full rounded">
+                  {filteredOptions.map(tech => (
+                    <li className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-sm flex flex-row p-1" key={tech} onClick={() => handleOptionClick(tech)}>
+                      <Image
+                      src={convertNameToPathSVG(tech)}
+                      alt="Icon tech stack"
+                      width={20}
+                      height={20}
+                      className="pr-1"
+                      />{tech}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="w-full flex flex-wrap justify-start gap-0.5">
+              <p className="text-center text-white p-2 m-2">Выбранный стек:</p>
+            {selectedStack.map(tech => (
+                    <div className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-lg flex flex-row p-2 text-center inline-block m-2" key={tech} onClick={() => handleRemoveTechClick(tech)}>
+                      <Image
+                      src={convertNameToPathSVG(tech)}
+                      alt="Icon tech stack"
+                      width={30}
+                      height={30}
+                      className="pr-1"
+                      />{tech}
+                    </div>
+                  ))}
+            </div>
+            </div>
+          </form>
+        </div>
+      </main>
+      <div className="inline-block flex">
+      <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-start gap-0.5 grid-auto-rows place-self-start inline-block w-full min-h-[980px]">
+        {filteredGroups.map((obj)=> (
+          <Card group={obj} key={obj.id} selectedStack={selectedStack} />
+        ))}
+        {filteredGroups.length < 1 && (<h1 className="text-center text-white">Результатов не найдено</h1>)}
+      </div>
+      </div>
+    </div>
+  );
+}
+
+export default MainComponent;

@@ -3,6 +3,4 @@ dev:
 install:
 	npm install
 lint:
-	npx run lint
-fix:
-	npx eslint --fix
+	npm run lint
