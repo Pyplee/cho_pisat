@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { ColorRing } from 'react-loader-spinner'
 import Cookies from 'js-cookie';
+import Image from 'next/image'
 
 
 function MainComponent() {
@@ -99,12 +100,12 @@ function MainComponent() {
           className="w-full bg-white text-black flex items-center justify-center py-2 rounded-md"
           onClick={handleRedirectGithub}
           >
-            <img
+            <Image
               className="fab fa-github mr-2"
               src="/github_logo_black.svg"
               alt="Github logo"
-              width="30px"
-              height="30px"
+              width={30}
+              height={30}
             />
             Войти через github
           </button>

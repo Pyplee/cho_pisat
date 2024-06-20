@@ -39,3 +39,12 @@ input:-webkit-autofill:active  {
     transition: background-color 5000s ease-in-out 0s;
     -webkit-text-fill-color: white !important;
 }
+
+.custom-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normla;
+  }

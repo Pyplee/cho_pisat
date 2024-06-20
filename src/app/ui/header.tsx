@@ -15,10 +15,10 @@ function Header() {
     </div>
     <nav className="flex space-x-4">
       <a href="#" className="text-xl">
-        O нас
+        <s>O нас</s>
       </a>
       <a href="#" className="text-xl">
-        Помощь
+        <s>Помощь</s>
       </a>
     </nav>
   </header>

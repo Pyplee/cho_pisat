@@ -7,19 +7,92 @@ import Card from './card';
 import technologies from '../technologyBase.js';
 import Image from 'next/image'
 import convertNameToPathSVG from '../findAndGetPathSVG.js';
-import { ColorRing } from 'react-loader-spinner'
+import { ColorRing } from 'react-loader-spinner';
+import useStore from '../store';
+import ModalCreate from './modalCreate';
+
+interface Request {
+  id: string;
+  name: string;
+  course: string;
+  description: string;
+  roles: string[];
+  stack: string[];
+  contactUser: string;
+  contactGroup: string;
+  creater: string;
+  dateCreated: string;
+  group: string;
+}
+
+const obj11 = {
+  id: '1',
+  name: 'Fotosintes Fotosintes FotosintesFotosintes Fotosintes Fotosintes',
+  description: 'Создание сайта для поиска групп для студентов, это облегчит поиск людей для учебной практики практикипрактики практики',
+  stack: [ 'React', 'Docker', 'Node.js', 'Tailwind CSS' ],
+  course: 2,
+  roles: [ 'devops', 'frontend' ],
+  contactUser: 'http://t.me/telegram/@rrrr',
+  contactGroup: 'http://t.me/telegram/fotosintes',
+  group: '2101-Д'
+}
+
 
 
 function MainComponent() {
-  const router = useRouter()
+  const [showModal, setShowModal] = React.useState(false);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
+
+  const router = useRouter();
+  const { requests, addRequest } = useStore();
   const limitedStackCount = 9;
 
-  const [isLoading, setLoading] = React.useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [selectedStack, setSelectedStack] = useState<string[]>([]);
   const autocompleteRef = useRef(null);
+
+  const [searchGroup, setSearchGroup] = useState('');
+  const [searchRole, setSearchRole] = useState('');
+
+  const handleSearchGroup = (event: React.FormEvent<HTMLInputElement>) => {
+    setSearchGroup((event.target as HTMLInputElement).value);
+  };
+
+  const handleSearchRole = (event: React.FormEvent<HTMLInputElement>) => {
+    setSearchRole((event.target as HTMLInputElement).value);
+  };
+
+  const filterGroups = (
+    groups: Request[],
+    searchGroup: string,
+    searchRole: string
+  ) => {
+    return groups.filter(group => {
+      const groupMatch = group.group.toLowerCase().includes(searchGroup.toLowerCase());
+      const roleMatch = group.roles.includes(searchRole.toLowerCase());
+      if (searchGroup === '' && searchRole === '') {
+        return true;
+      } else if (searchGroup === '') {
+        return roleMatch;
+      } else if (searchRole === '') {
+        return groupMatch;
+      }
+      return groupMatch && roleMatch;
+    });
+  };
+
+  const filteredGroups = filterGroups(requests, searchGroup, searchRole);
+
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -28,16 +101,29 @@ function MainComponent() {
         setFilteredOptions([]);
       }
     };
-    const token = Cookies.get('token');
-    api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
-    .then((response) => {
-      const status = response.status;
-      if (status !== 200) {
-        throw new Error(`Error: ${status}`);
-      }
-      setLoading(false);
-    })
-    .catch((error) => router.push('/auth'));
+
+    // const token = Cookies.get('token');
+    // api.get(routes.userMe(), { headers: {"Authorization": `Bearer ${token}`}})
+    // .then((response) => {
+    //   const status = response.status;
+    //   if (status !== 200) {
+    //     throw new Error(`Error: ${status}`);
+    //   }
+    //   setLoading(false);
+    // })
+    // .catch((error) => router.push('/auth'));
+
+    // api.get(routes.groups(), { headers: {"Authorization": `Bearer ${token}`}})
+    // .then((response) => {
+    //   const status = response.status;
+    //   if (status !== 200) {
+    //     throw new Error(`Error: ${status}`);
+    //   }
+    //   response.data.array.forEach(el => {
+    //     addRequest(el);
+    //   });
+    // })
+    // .catch((error) => console.log(error));
 
     document.addEventListener('click', handleOutsideClick);
 
@@ -86,24 +172,25 @@ if (isLoading) {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#393E46] rounded-xl">
+      <ModalCreate showModal={showModal} handleCloseModal={handleCloseModal} />
       <main className="flex-grow p-4 flex space-x-4 ">
-        <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px]">
+        <div className="bg-[#222831] p-4 rounded-xl space-y-4 w-[300px] max-h-[346px]">
           <h2 className="text-white text-xl">Меню</h2>
-          <button className="w-full bg-white py-2 rounded">
+          <button className="w-full bg-white py-2 rounded" onClick={handleOpenModal}>
             Создать группу
           </button>
           <button className="w-full bg-white py-2 rounded">
-            Создать письмо для отклика
+            <s>Создать письмо для отклика</s>
           </button>
           <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
             Настройка профиля
           </button>
         </div>
-        <div className="bg-[#222831] p-4 rounded-xl flex-grow space-y-4">
+        <div className="bg-[#222831] p-4 rounded-xl flex-grow space-y-4 max-h-[314] min-h-[208px]">
           <div className="flex justify-between items-center">
             <h2 className="text-white text-xl">Поиск группы</h2>
             <span className="text-[#ff5c00] text-base">
-              Найдено результатов: 0
+              Найдено результатов: {filteredGroups.length}
             </span>
           </div>
           <form className="space-y-4">
@@ -114,15 +201,17 @@ if (isLoading) {
                 id="groupName"
                 placeholder="Группа. Например: 2101-Д"
                 className="flex-grow p-2 rounded bg-[#2c3136] text-white bg-opacity-100"
+                onChange={handleSearchGroup}
               />
               <input
                 name="role"
                 type="text"
                 placeholder="Желаемая роль в команде"
                 className="flex-grow p-2 rounded bg-[#2c3136] text-white"
+                onChange={handleSearchRole}
               />
             </div>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
             <input
               name="keywords"
               type="text"
@@ -134,9 +223,9 @@ if (isLoading) {
               className="w-full p-2 rounded bg-[#2c3136] text-white"
             >
               <option value="relewant">Наилучшее совпадение</option>
-              <option value="newest">Новые</option>
-            </select>
-            </div>
+              {/* <option value="newest">Новые</option> */}
+            {/* </select> */}
+            {/* </div> */}
             <div className="space-x-4">
             <div ref={autocompleteRef} className="w-full relative">
               <input
@@ -163,6 +252,7 @@ if (isLoading) {
               )}
             </div>
             <div className="w-full flex flex-wrap justify-start gap-0.5">
+              <p className="text-center text-white p-2 m-2">Выбранный стек:</p>
             {selectedStack.map(tech => (
                     <div className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-lg flex flex-row p-2 text-center inline-block m-2" key={tech} onClick={() => handleRemoveTechClick(tech)}>
                       <Image
@@ -180,25 +270,11 @@ if (isLoading) {
         </div>
       </main>
       <div className="inline-block flex">
-      <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-center gap-0.5 grid-auto-rows place-self-start inline-block">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+      <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-start gap-0.5 grid-auto-rows place-self-start inline-block w-full min-h-[980px]">
+        {filteredGroups.map((obj)=> (
+          <Card group={obj} key={obj.id} selectedStack={selectedStack} />
+        ))}
+        {filteredGroups.length < 1 && (<h1 className="text-center text-white">Результатов не найдено</h1>)}
       </div>
       </div>
     </div>
