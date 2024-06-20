@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import {api, routes} from '../routes';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -126,4 +126,10 @@ function MainComponent() {
   );
 }
 
-export default MainComponent;
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MainComponent />
+    </Suspense>
+  );
+}

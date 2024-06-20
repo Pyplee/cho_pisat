@@ -25,17 +25,17 @@ interface Request {
   group: string;
 }
 
-const obj11 = {
-  id: '1',
-  name: 'Fotosintes Fotosintes FotosintesFotosintes Fotosintes Fotosintes',
-  description: 'Создание сайта для поиска групп для студентов, это облегчит поиск людей для учебной практики практикипрактики практики',
-  stack: [ 'React', 'Docker', 'Node.js', 'Tailwind CSS' ],
-  course: 2,
-  roles: [ 'devops', 'frontend' ],
-  contactUser: 'http://t.me/telegram/@rrrr',
-  contactGroup: 'http://t.me/telegram/fotosintes',
-  group: '2101-Д'
-}
+// const obj11 = {
+//   id: '1',
+//   name: 'Fotosintes Fotosintes FotosintesFotosintes Fotosintes Fotosintes',
+//   description: 'Создание сайта для поиска групп для студентов, это облегчит поиск людей для учебной практики практикипрактики практики',
+//   stack: [ 'React', 'Docker', 'Node.js', 'Tailwind CSS' ],
+//   course: 2,
+//   roles: [ 'devops', 'frontend' ],
+//   contactUser: 'http://t.me/telegram/@rrrr',
+//   contactGroup: 'http://t.me/telegram/fotosintes',
+//   group: '2101-Д'
+// }
 
 
 
@@ -119,7 +119,7 @@ function MainComponent() {
     //   if (status !== 200) {
     //     throw new Error(`Error: ${status}`);
     //   }
-    //   response.data.array.forEach(el => {
+    //   response.data.array.forEach((el: Request) => {
     //     addRequest(el);
     //   });
     // })
