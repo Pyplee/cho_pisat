@@ -105,7 +105,7 @@ function MainComponent() {
       if (status !== 200) {
         throw new Error(`Error: ${status}`);
       }
-      response.data.array.forEach((el: Request) => {
+      response.data.forEach((el: Request) => {
         addRequest(el);
       });
     })
