@@ -4,7 +4,7 @@ import create from 'zustand';
 interface Request {
   id: string; // Added an 'id' field for unique identification
   name: string;
-  course: number;
+  course: string;
   description: string;
   roles: string[];
   stack: string[];

@@ -5,11 +5,14 @@ import convertNameToPathSVG from '../findAndGetPathSVG.js';
 import ModalInfo from './modalInfo';
 import { useDisclosure } from "@nextui-org/react";
 interface Group {
+  id: string;
   name: string;
   description: string;
+  roles: string[];
   stack: string[];
-  selectedStack: string[];
-  id: string;
+  contactUser: string;
+  contactGroup: string;
+  course: string;
 }
 
 function Card({ group, selectedStack }: { group: Group; selectedStack: string[] }) {

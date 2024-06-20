@@ -3,9 +3,21 @@ import Image from 'next/image'
 import convertNameToPathSVG from '../findAndGetPathSVG.js';
 import { useRouter } from 'next/navigation';
 
+interface Group {
+  name: string;
+  description: string;
+  roles: string[];
+  stack: string[];
+  contactUser: string;
+  contactGroup: string;
+  course: string;
+}
+
 interface ModalProps {
   showModal: boolean;
   handleCloseModal: () => void;
+  group: Group; // Add the group property
+  selectedStack: string[]; // Add the selectedStack property
 }
 export default function Modal({ showModal, handleCloseModal, group, selectedStack }: ModalProps) {
   const router = useRouter();
