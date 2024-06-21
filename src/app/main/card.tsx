@@ -16,7 +16,6 @@ interface Group {
 }
 // @ts-ignore
 function Card({ group, selectedStack }: Group) {
-  console.log(group);
   const { name, description, stack, id } = group;
   const [showModal, setShowModal] = React.useState(false);
 // @ts-ignore
