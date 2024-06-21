@@ -102,7 +102,19 @@ function MainComponent() {
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2e3138] w-full h-full flex justify-center items-center">
+        <ColorRing
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{}}
+          wrapperClass="color-ring-wrapper"
+          colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+          />
+      </div>
+    }>
       <MainComponent />
     </Suspense>
   );
