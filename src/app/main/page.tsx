@@ -66,9 +66,14 @@ function MainComponent() {
   ) => {
     return groups.filter(group => {
       const groupMatch = group.group.toLowerCase().includes(searchGroup.toLowerCase());
-      const roleMatch = group.roles.some(role => role.toLowerCase().includes(searchRole.toLowerCase()));
-      const stackMatch = group.stack.some(tech => selectedStack.includes(tech));
-  
+      const roleMatch = group.roles.includes(searchRole.toLowerCase());
+      let stackMatch = true;
+      if (selectedStack.length > 0) {
+        stackMatch = group.stack.some(tech => selectedStack.includes(tech));
+      }
+      if (selectedStack.length > 0 && searchGroup === '' && searchRole === ''){
+        return stackMatch;
+      }
       if (searchGroup === '' && searchRole === '' && selectedStack.length === 0) {
         return true;
       } else if (searchGroup === '') {
@@ -136,8 +141,6 @@ function MainComponent() {
       document.removeEventListener('click', handleOutsideClick);
     }
   }, []);
-
-  console.log(requests);
 
   const handleSearch = (event: React.FormEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
