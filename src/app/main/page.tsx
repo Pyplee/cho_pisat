@@ -187,12 +187,12 @@ if (isLoading) {
           <button className="w-full bg-white py-2 rounded text-black" onClick={handleOpenModal}>
             Создать группу
           </button>
-          <button className="w-full bg-white py-2 rounded text-black">
+          {/* <button className="w-full bg-white py-2 rounded text-black">
             <s>Создать письмо для отклика</s>
-          </button>
-          <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
+          </button> */}
+          {/* <button className="w-full bg-[#DC5F00] text-white py-2 rounded">
             Настройка профиля
-          </button>
+          </button> */}
         </div>
         <div className="bg-[#222831] p-4 rounded-xl flex-grow space-y-4 max-h-[314] min-h-[208px]">
           <div className="flex justify-between items-center">
