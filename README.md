@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<img src="https://github.com/Pyplee/gsfind_frontend/assets/112984775/5d4279f4-5717-4188-a021-0fa2ccd8a310" width="100"/>
 
-## Getting Started
+# GSfind - Group Students Find
 
-First, run the development server:
+![photo_2024-06-21_13-00-29](https://github.com/Pyplee/gsfind_frontend/assets/112984775/f5522928-096d-4f18-9847-dd7ca8d481ca)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Обзор
+GSfind (Group Students Find) — это веб-приложение, разработанное для помощи студентам колледжa в поиске и создании учебных групп или проектных команд. Эта платформа упрощает процесс связи с однокурсниками, которые имеют схожие академические интересы и цели, что способствует улучшению совместного обучения и повышению эффективности выполнения проектов.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Возможности
+- **Регистрация и аутентификация пользователей:** Быстрая регистрация и вход в систему с помощью GitHubToken.
+- **Поиск групп:** Расширенные параметры поиска для нахождения учебных групп, включая выбор стека идеи проекта и курса студентов.
+- **Создание групп:** Пользователи могут создавать новые группы, указывать требования к группе и приглашать участников.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Установка
+Чтобы настроить проект локально, выполните следующие шаги:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Клонируйте репозиторий:
+    ```
+    git clone 
+    ```
 
-## Learn More
+2. Перейдите в каталог проекта:
+    ```
+    cd gsfind_frontend
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Установите зависимости:
+    ```
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Выполните сборку приложения:
+    ```
+    npm run build
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. Запустите приложение локально:
+    ```
+    npm run start
+    ```
 
-## Deploy on Vercel
+6. Откройте браузер и перейдите по адресу:
+    ```
+    http://localhost:3000
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Использование
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Регистрация / Вход:
+![photo_2024-06-21_13-42-57 (2)](https://github.com/Pyplee/gsfind_frontend/assets/112984775/db3ad842-63ec-4aa8-870e-31de5ce8aa01)
+
+### Поиск групп:
+![photo_2024-06-21_13-00-57](https://github.com/Pyplee/gsfind_frontend/assets/112984775/0b60189c-9adf-4c59-a08a-538c79956fa4)
+
+### Вид карточки:
+![photo_2024-06-21_13-01-11](https://github.com/Pyplee/gsfind_frontend/assets/112984775/35e7e3db-2e0a-4f1a-9a20-a700a350edb6)
+
+### Фильтрация карточек по стеку:
+![image](https://github.com/Pyplee/gsfind_frontend/assets/112984775/d666ce3a-3b3f-4507-b002-d4d0f8b7b7de)
+
+## Используемые технологии
+- **Frontend:** NextJS, HTML, CSS, Tailwind
+- **Backend:** AdonisJS, TypeScript
+- **База данных:** MySQL
+- **Аутентификация:** JWT (JSON Web Tokens)
+- **Хостинг:** [Cloud.ru](https://cloud.ru/)
+- **Devops:** Docker Compose, NGINX, Ansible, GitHub Actions
+
+## Вклад в проект
+Мы приветствуем вклады от сообщества! Чтобы внести вклад, выполните следующие шаги:
+
+1. Форкните репозиторий.
+   
+2. Создайте новую ветку:
+    ```
+    git checkout -b feature/your-feature-name
+    ```
+3. Внесите свои изменения и зафиксируйте их:
+    ```
+    git commit -m "Добавить ваше сообщение о коммите"
+    ```
+4. Отправьте изменения в ветку:
+    ```
+    git push origin feature/your-feature-name
+    ```
+6. Откройте pull request.
+
+7. Ждите одобрения pull request.
+
+## Контакты
+По всем вопросам и для получения поддержки, пожалуйста, свяжитесь с нами:
+- **Фронтенд-разработчик** — [![Telegram Badge](https://img.shields.io/badge/-dekimiq-Swamp?style=flat&logo=Telegram&logoColor=white)](https://t.me/dekimiq)[![Gmail Badge](https://img.shields.io/badge/-Mail-blue?style=flat&logo=Gmail&logoColor=white)](mailto:dekimiq@gmail.com)
+- **Бэкенд-разработчик** — [![Telegram Badge](https://img.shields.io/badge/-volkovcutee-Swamp?style=flat&logo=Telegram&logoColor=white)](https://t.me/volkovcutee)[![Gmail Badge](https://img.shields.io/badge/-Mail-blue?style=flat&logo=Gmail&logoColor=white)](mailto:volkov.nikita@my.com)
+- **DevOps** — [![Telegram Badge](https://img.shields.io/badge/-geo_rid-Swamp?style=flat&logo=Telegram&logoColor=white)](https://t.me/geo_rid)[![Gmail Badge](https://img.shields.io/badge/-Mail-blue?style=flat&logo=Gmail&logoColor=white)](mailto:wopa22@list.ru)
+
+## Благодарности
+Мы хотим поблагодарить всех участников и сторонников этого проекта. Ваша помощь высоко ценится! :two_hearts: :two_hearts: :two_hearts:
