@@ -12,7 +12,7 @@ import Image from 'next/image'
 function MainComponent() {
   const [isLoading, setLoading] = useState(true)
   const searchParams = useSearchParams()
-  const queryString = searchParams.getAll('code');
+  const queryString = searchParams.toString();
   const router = useRouter()
 
   useEffect(() => {

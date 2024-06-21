@@ -18,7 +18,7 @@ const routes = {
   userMeEdit: () => `${baseURL}/api/user/me/edit`, // релактировать свой профиль
   // redirectGithub: () => `${baseURL}/api/github/redirect`, // auth github redirect
   redirectGithub: () => `${baseURL}/api/github/redirect`, // auth github redirect
-  sendTokenGithub: (data) => `${baseURL}/api/github/callback?code=${data}`, // auth github redirect
+  sendTokenGithub: (data) => `${baseURL}/api/github/callback?${data}`, // auth github redirect
   addGroup: () => `${baseURL}/api/groups/new`, // auth github redirect
 };
 
