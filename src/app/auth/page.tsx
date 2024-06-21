@@ -55,20 +55,6 @@ function MainComponent() {
     );
   }
 
-  // const handleRedirectGithub = async () => {
-  //   try {
-  //     const response = await api.get(routes.redirectGithub());
-  //     const url = routes.redirectGithub();
-  //     if (response.status !== 200) {
-  //       throw new Error(response.statusText);
-  //     }
-  //     // window.location.href = url;
-  //     router.push(url);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   return (
     <div className="min-h-screen flex">
       <div className="flex-1 bg-[#2e3138] flex flex-col items-start p-4 justify-center text-center items-center font-bold">

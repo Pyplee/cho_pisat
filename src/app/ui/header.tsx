@@ -14,12 +14,12 @@ function Header() {
     </Link>
     </div>
     <nav className="flex space-x-4">
-      <a href="#" className="text-xl text-black">
+      {/* <a href="#" className="text-xl text-black">
         <s>O нас</s>
       </a>
       <a href="#" className="text-xl text-black">
         <s>Помощь</s>
-      </a>
+      </a> */}
     </nav>
   </header>
   );
