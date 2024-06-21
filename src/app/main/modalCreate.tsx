@@ -173,6 +173,8 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                     <input
                       name="course"
                       type="number"
+                      min="1"
+                      max="5"
                       placeholder="Курс (1, 2, 3)"
                       className="flex-grow p-2 rounded bg-[#2c3136] text-white"
                       onChange={handleInputChange}

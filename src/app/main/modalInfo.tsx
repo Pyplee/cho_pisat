@@ -66,7 +66,7 @@ export default function Modal({ showModal, handleCloseModal, group, selectedStac
                   ))}
                   </div>
                   <div className="text-md font-bold mb-2">Стек:</div>
-                  <div className="flex items-center mb-4">
+                  <div className="flex flex-wrap justify-start gap-0.5">
                   {group.stack.map((el, index) => (
                     <div className={`inline-block bg-[#737272] p-1 m-1 rounded-lg flex flex-row p-1 ${selectedStack.includes(el) ? 'bg-[#DC5F00]' : 'bg-[#737272]'}`} key={index}>
                       <Image
