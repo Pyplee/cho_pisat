@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from 'next/image'
 import convertNameToPathSVG from '../findAndGetPathSVG.js';
 import technologies from '../technologyBase.js';
@@ -25,14 +25,6 @@ export default function Modal({ showModal, handleCloseModal }: ModalProps) {
     setFilteredOptions(filteredTech);
   };
 
-  const handleOptionClick = (tech: string) => {
-    setSearchTerm(tech);
-    setFilteredOptions([]);
-    if (!selectedStack.includes(tech) && selectedStack.length < limitedStackCount) {
-    setSelectedStack([...selectedStack, tech])
-  };
-  setSearchTerm("");
-}
 const handleRemoveTechClick = (tech: string) => {
   const newTech = selectedStack.filter((el) => el !== tech);
   setSelectedStack(newTech);
@@ -60,6 +52,19 @@ const [formData, setFormData] = useState<
   group: "",
 });
 
+const handleOptionClick = (tech: string) => {
+  setSearchTerm(tech);
+  setFilteredOptions([]);
+  if (!selectedStack.includes(tech) && selectedStack.length < limitedStackCount) {
+  setSelectedStack([...selectedStack, tech]);
+  setFormData(() => ({ ...formData, stack: [...selectedStack, tech] }));
+};
+setSearchTerm("");
+}
+
+useEffect(() => {
+}, [selectedStack]);
+
 const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
   const { name, value } = event.target as HTMLInputElement;
   if (name === 'roles') {
@@ -71,10 +76,9 @@ const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
 };
 
 const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
-  const stack = selectedStack;
-  setFormData((prevState) => ({ ...prevState, stack }));
   event.preventDefault();
-  console.log("Form data:", formData);
+  const stack = [...selectedStack];
+  setFormData((prevState) => ({ ...prevState, stack }));
   const token = Cookies.get('token');
     api.post(routes.addGroup(), formData ,{ headers: {"Authorization": `Bearer ${token}`},})
     .then((response) => {
@@ -82,6 +86,7 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
       if (status !== 200) {
         throw new Error(`Error: ${status}`);
       }
+      handleCloseModal();
     })
     .catch((error) => console.log(error));
 };
@@ -133,6 +138,7 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                   <div className="space-x-4">
                   <div ref={autocompleteRef} className="w-full relative">
                     <input
+                      name="stack"
                       type="text"
                       value={searchTerm}
                       onChange={handleSearch}
@@ -166,7 +172,7 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                     />
                     <input
                       name="course"
-                      type="text"
+                      type="number"
                       placeholder="Курс (1, 2, 3)"
                       className="flex-grow p-2 rounded bg-[#2c3136] text-white"
                       onChange={handleInputChange}
@@ -200,7 +206,7 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                   <div className="w-full flex flex-wrap justify-start gap-0.5">
                     <p className="text-center text-white p-2 m-2">Выбранный стек:</p>
                   {selectedStack.map(tech => (
-                          <div className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-lg flex flex-row p-2 text-center inline-block m-2" key={tech} onClick={() => handleRemoveTechClick(tech)}>
+                          <div className="hover:bg-[#2c3136] hover:cursor-pointer text-white rounded-lg flex flex-row p-2 text-center inline-block m-2" key={tech} onClick={() => handleRemoveTechClick(tech)} >
                             <Image
                             src={convertNameToPathSVG(tech)}
                             alt="Icon tech stack"
@@ -227,14 +233,14 @@ const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                     type="button"
                     onClick={handleCloseModal}
                   >
-                    Close
+                    Закрыть
                   </button>
                   <button
                     className="bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
                     type="submit"
                     onClick={handleSubmit}
                   >
-                    Create Group
+                    Создать
                   </button>
                 </div>
               </div>

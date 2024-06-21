@@ -14,10 +14,13 @@ interface Group {
   contactGroup: string;
   course: string;
 }
-
-function Card({ group, selectedStack }: { group: Group; selectedStack: string[] }) {
+// @ts-ignore
+function Card({ group, selectedStack }: Group) {
+  console.log(group);
   const { name, description, stack, id } = group;
   const [showModal, setShowModal] = React.useState(false);
+// @ts-ignore
+  const isStackMatch = group.stack.some(tech => selectedStack.includes(tech));
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -42,7 +45,7 @@ function Card({ group, selectedStack }: { group: Group; selectedStack: string[] 
       <div className="h-[180px]">
         <h3 className="text-lg font-semibold mb-2">Стек проекта:</h3>
         <div className="flex flex-wrap mb-4 justify-start gap-0.5 grid-auto-rows">
-          {stack.map((el, index) => (
+          {stack.map((el: string, index: number) => (
             <div className={`inline-block bg-[#737272] p-1 m-1 rounded-lg flex flex-row p-1 ${selectedStack.includes(el) ? 'bg-[#DC5F00]' : 'bg-[#737272]'}`} key={index}>
               <Image
             src={convertNameToPathSVG(el)}

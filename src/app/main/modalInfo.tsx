@@ -125,7 +125,7 @@ export default function Modal({ showModal, handleCloseModal, group, selectedStac
                     type="button"
                     onClick={handleCloseModal}
                   >
-                    Close
+                    Закрыть
                   </button>
                 </div>
               </div>
