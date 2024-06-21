@@ -55,19 +55,19 @@ function MainComponent() {
     );
   }
 
-  const handleRedirectGithub = async () => {
-    try {
-      const response = await api.get(routes.redirectGithub());
-      const url = routes.redirectGithub();
-      if (response.status !== 200) {
-        throw new Error(response.statusText);
-      }
-      // window.location.href = url;
-      router.push(url);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // const handleRedirectGithub = async () => {
+  //   try {
+  //     const response = await api.get(routes.redirectGithub());
+  //     const url = routes.redirectGithub();
+  //     if (response.status !== 200) {
+  //       throw new Error(response.statusText);
+  //     }
+  //     // window.location.href = url;
+  //     router.push(url);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   return (
     <div className="min-h-screen flex">
@@ -82,9 +82,8 @@ function MainComponent() {
       <div className="flex-1 bg-[#383b42] p-8 flex flex-col items-center justify-center">
         <h2 className="text-white font-bold text-2xl mb-6">Вход / регистрация</h2>
         <div className="w-1/2 space-y-4">
-          <button
+          <a href={routes.redirectGithub()}
           className="w-full bg-white text-black flex items-center justify-center py-2 rounded-md"
-          onClick={handleRedirectGithub}
           >
             <Image
               className="fab fa-github mr-2"
@@ -94,7 +93,7 @@ function MainComponent() {
               height={30}
             />
             Войти через github
-          </button>
+          </a>
         </div>
       </div>
     </div>
