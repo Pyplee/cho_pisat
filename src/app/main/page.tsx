@@ -111,7 +111,6 @@ function MainComponent() {
       if (status !== 200) {
         throw new Error(`Error: ${status}`);
       }
-      console.log(response.data)
       const maped = response.data.map((obj: Request) => {
         // @ts-ignore
         const arrRoles = obj.roles.split(',');
