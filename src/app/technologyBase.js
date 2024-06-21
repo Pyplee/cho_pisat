@@ -88,8 +88,6 @@ const technologies = [
   "Puppet",
   "AWS Lambda",
   "Azure",
-  "Google Cloud Functions",
-  "Serverless Framework"
   ];
 
   export default technologies;

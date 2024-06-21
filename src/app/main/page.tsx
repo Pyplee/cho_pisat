@@ -61,23 +61,29 @@ function MainComponent() {
   const filterGroups = (
     groups: Request[],
     searchGroup: string,
-    searchRole: string
+    searchRole: string,
+    selectedStack: string[]
   ) => {
     return groups.filter(group => {
       const groupMatch = group.group.toLowerCase().includes(searchGroup.toLowerCase());
-      const roleMatch = group.roles.includes(searchRole.toLowerCase());
-      if (searchGroup === '' && searchRole === '') {
+      const roleMatch = group.roles.some(role => role.toLowerCase().includes(searchRole.toLowerCase()));
+      const stackMatch = group.stack.some(tech => selectedStack.includes(tech));
+  
+      if (searchGroup === '' && searchRole === '' && selectedStack.length === 0) {
         return true;
       } else if (searchGroup === '') {
-        return roleMatch;
+        return roleMatch && stackMatch;
       } else if (searchRole === '') {
-        return groupMatch;
+        return groupMatch && stackMatch;
+      } else if (selectedStack.length === 0) {
+        return groupMatch && roleMatch;
       }
-      return groupMatch && roleMatch;
+  
+      return groupMatch && roleMatch && stackMatch;
     });
   };
 
-  const filteredGroups = filterGroups(requests, searchGroup, searchRole);
+  const filteredGroups = filterGroups(requests, searchGroup, searchRole, selectedStack);
 
 
   useEffect(() => {
@@ -105,7 +111,21 @@ function MainComponent() {
       if (status !== 200) {
         throw new Error(`Error: ${status}`);
       }
-      response.data.forEach((el: Request) => {
+      console.log(response.data)
+      const maped = response.data.map((obj: Request) => {
+        // @ts-ignore
+        const arrRoles = obj.roles.split(',');
+        // @ts-ignore
+        const arrStack = obj.stack.split(',');
+        return {
+          ...obj,
+          // @ts-ignore
+          roles: arrRoles.map((role) => role.trim()),
+          // @ts-ignore
+          stack: arrStack.map((stack) => stack.trim()),
+        };
+      });
+      maped.forEach((el: Request) => {
         addRequest(el);
       });
     })
@@ -117,6 +137,8 @@ function MainComponent() {
       document.removeEventListener('click', handleOutsideClick);
     }
   }, []);
+
+  console.log(requests);
 
   const handleSearch = (event: React.FormEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
@@ -256,12 +278,13 @@ if (isLoading) {
         </div>
       </main>
       <div className="inline-block flex">
-      <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-start gap-0.5 grid-auto-rows place-self-start inline-block w-full min-h-[980px]">
-        {filteredGroups.map((obj)=> (
-          <Card group={obj} key={obj.id} selectedStack={selectedStack} />
-        ))}
-        {filteredGroups.length < 1 && (<h1 className="text-center text-white">Результатов не найдено</h1>)}
-      </div>
+        <div className="bg-[#222831] p-4 rounded-xl m-4 space-y-4 flex flex-wrap justify-start gap-0.5 grid-auto-rows place-self-start inline-block w-full min-h-[980px]">
+          {filteredGroups.map((obj)=> (
+            // @ts-ignore
+            <Card group={obj} key={obj.id} selectedStack={selectedStack} />
+          ))}
+          {filteredGroups.length < 1 && (<h1 className="text-center text-white">Результатов не найдено</h1>)}
+        </div>
       </div>
     </div>
   );
